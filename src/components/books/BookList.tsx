@@ -2,15 +2,11 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import SearchBar from './SearchBar';
-
-type Book = {
-  id: number;
-  title: string;
-  author: string;
-  stock: number;
-};
+import { useRouter } from 'next/navigation';
+import { Book } from '@/interface/Book.interface';
 
 export default function BookList() {
+  const router = useRouter();
   const [books, setBooks] = useState<Book[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
@@ -23,8 +19,8 @@ export default function BookList() {
   const currentBooks = books
     .filter((book) => {
       return (
-        book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        book.author.toLowerCase().includes(searchTerm.toLowerCase())
+        book?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        book?.author?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     })
     .slice(indexOfFirstBook, indexOfLastBook);
@@ -43,7 +39,7 @@ export default function BookList() {
   };
 
   const goBookDetail = (id: number) => {
-    console.log(id);
+    router.push(`/books/${id}`);
   };
 
   useEffect(() => {
