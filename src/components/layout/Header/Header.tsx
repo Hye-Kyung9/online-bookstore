@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import HeaderSearch from './HeaderSearch';
 
 export default function Header() {
   return (
@@ -10,7 +9,6 @@ export default function Header() {
         <Link href="/">
           <span className="text-blue-500 font-bold text-3xl">Online BookStore</span>
         </Link>
-        <HeaderSearch />
       </div>
     </>
   );
