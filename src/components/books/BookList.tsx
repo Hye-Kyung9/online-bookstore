@@ -1,7 +1,7 @@
 'use client';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import HeaderSearch from '../layout/Header/HeaderSearch';
+import SearchBar from './SearchBar';
 
 type Book = {
   id: number;
@@ -42,6 +42,10 @@ export default function BookList() {
     setCurrentPage(1); // 검색 시 첫 페이지로 리셋
   };
 
+  const goBookDetail = (id: number) => {
+    console.log(id);
+  };
+
   useEffect(() => {
     axios
       .get('/api/books')
@@ -56,12 +60,18 @@ export default function BookList() {
     <div className="p-4">
       <div className="flex justify-between pb-4">
         <h1 className="text-2xl font-bold mb-4">📚 책 목록</h1>
-        <HeaderSearch searchTerm={searchTerm} onSearchChange={handleSearchChange} />
+        <SearchBar searchTerm={searchTerm} onSearchChange={handleSearchChange} />
       </div>
+      <button className="mx-1 px-4 py-2 mb-2 border rounded-lg bg-blue-500 text-white">
+        책 추가하기
+      </button>
 
       <ul>
         {currentBooks.map((book) => (
-          <li key={book.id} className="border p-2 mb-2 rounded-lg">
+          <li
+            key={book.id}
+            className="border p-2 mb-2 rounded-lg hover:bg-blue-50 cursor-pointer"
+            onClick={() => goBookDetail(book.id)}>
             <strong>{book.title}</strong> - {book.author} (재고: {book.stock}권)
           </li>
         ))}

@@ -1,9 +1,9 @@
-import BookLisk from '@/components/books/BookList';
+import BookList from '@/components/books/BookList';
 
 export default function Home() {
   return (
     <div>
-      <BookLisk />
+      <BookList />
     </div>
   );
 }

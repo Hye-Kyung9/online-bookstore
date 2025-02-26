@@ -1,11 +1,11 @@
 'use client';
 
-type HeaderSearchProps = {
+type SearchBarProps = {
   searchTerm: string;
   onSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-export default function HeaderSearch({ searchTerm, onSearchChange }: HeaderSearchProps) {
+export default function SearchBar({ searchTerm, onSearchChange }: SearchBarProps) {
   return (
     <input
       type="text"
