@@ -4,12 +4,19 @@ import { useEffect, useState } from 'react';
 import SearchBar from './SearchBar';
 import { useRouter } from 'next/navigation';
 import { Book } from '@/interface/Book.interface';
+import BookPostModal from './BookPostModal';
 
 export default function BookList() {
   const router = useRouter();
   const [books, setBooks] = useState<Book[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
+
+  const [showModal, setShowModal] = useState(false);
+
+  const handleModalToggle = () => {
+    setShowModal((prev) => !prev);
+  };
 
   const booksPerPage = 10;
 
@@ -58,7 +65,9 @@ export default function BookList() {
         <h1 className="text-2xl font-bold mb-4">📚 책 목록</h1>
         <SearchBar searchTerm={searchTerm} onSearchChange={handleSearchChange} />
       </div>
-      <button className="mx-1 px-4 py-2 mb-2 border rounded-lg bg-blue-500 text-white">
+      <button
+        className="mx-1 px-4 py-2 mb-2 border rounded-lg bg-blue-500 text-white"
+        onClick={handleModalToggle}>
         책 추가하기
       </button>
 
@@ -84,6 +93,7 @@ export default function BookList() {
           </button>
         ))}
       </div>
+      {showModal && <BookPostModal addBook={showModal} clickModal={handleModalToggle} />}
     </div>
   );
 }
