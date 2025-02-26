@@ -1,3 +1,9 @@
+import BookLisk from '@/components/books/BookList';
+
 export default function Home() {
-  return <div>HOME</div>;
+  return (
+    <div>
+      <BookLisk />
+    </div>
+  );
 }
