@@ -13,7 +13,6 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 }
 
 //책 내용 수정
-
 export async function PUT(req: Request, { params }: { params: { id: string } }) {
   try {
     const { id } = params;

@@ -1,6 +1,6 @@
 import { bookList } from '@/lib/bookList';
-import { NextResponse } from 'next/server';
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from 'next/server';
+// import { NextApiRequest, NextApiResponse } from 'next';
 
 //책 리스트 조회
 export async function GET() {
@@ -8,21 +8,27 @@ export async function GET() {
 }
 
 //새로운 책 등록
-export async function POST(req: NextApiRequest, res: NextApiResponse) {
-  const { title, author, stock, description } = req.body;
+export async function POST(req: NextRequest) {
+  try {
+    const { title, author, stock, description } = await req.json();
 
-  if (!title || !author || !stock || !description) {
-    return res.status(400).json({ error: 'Missing required fields' });
+    if (!title || !author || !stock || !description) {
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    }
+
+    const newBook = {
+      id: bookList.length + 1,
+      title,
+      author,
+      stock,
+      description,
+    };
+
+    bookList.push(newBook);
+
+    return NextResponse.json(newBook, { status: 201 });
+  } catch (error) {
+    console.error('책 추가 중 오류 발생:', error); // 오류 로그 출력
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
-
-  const newBook = {
-    id: bookList.length + 1,
-    title,
-    author,
-    stock,
-    description,
-  };
-
-  bookList.push(newBook);
-  return res.status(201).json(newBook);
 }
