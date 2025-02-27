@@ -3,22 +3,31 @@ import { NextRequest, NextResponse } from 'next/server';
 
 // 책 상세정보 조회
 export async function GET(req: NextRequest, context: { params: { id: string } }) {
-  const { id } = await context.params; // 비동기적으로 params를 받아옴
-  const parsedId = Number(id);
+  try {
+    // context에서 id 추출
+    const { id } = context.params;
 
-  if (!parsedId) {
-    return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
+    if (!id) {
+      return NextResponse.json({ message: 'ID is required' }, { status: 400 });
+    }
+
+    const bookId = parseInt(id, 10); // ID를 정수로 변환
+    if (isNaN(bookId)) {
+      return NextResponse.json({ message: 'Invalid ID format' }, { status: 400 });
+    }
+
+    // bookList에서 해당 ID의 책을 찾음
+    const book = bookList.find((book) => book.id === bookId);
+
+    if (!book) {
+      return NextResponse.json({ message: '책을 찾을 수 없습니다.' }, { status: 404 });
+    }
+
+    return NextResponse.json(book, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ message: '서버 오류', error: error }, { status: 500 });
   }
-
-  const book = bookList.find((book) => book.id === parsedId);
-
-  if (!book) {
-    return NextResponse.json({ error: 'Book not found' }, { status: 404 });
-  }
-
-  return NextResponse.json(book);
 }
-
 //책 내용 수정
 export async function PUT(req: NextRequest) {
   try {
