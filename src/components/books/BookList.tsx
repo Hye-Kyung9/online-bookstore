@@ -5,17 +5,28 @@ import SearchBar from './SearchBar';
 import { useRouter } from 'next/navigation';
 import { Book } from '@/interface/Book.interface';
 import BookPostModal from './BookPostModal';
+import BookEditModal from './BookEditModal'; // 수정 모달 import
 
 export default function BookList() {
   const router = useRouter();
   const [books, setBooks] = useState<Book[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
+  const [showPostModal, setShowPostModal] = useState(false); // 책 추가 모달
+  const [showEditModal, setShowEditModal] = useState(false); // 책 수정 모달
+  const [bookToEdit, setBookToEdit] = useState<Book | null>(null); // 수정할 책 정보 저장
 
-  const [showModal, setShowModal] = useState(false);
+  const handlePostModalToggle = () => {
+    setShowPostModal((prev) => !prev);
+  };
 
-  const handleModalToggle = () => {
-    setShowModal((prev) => !prev);
+  const handleEditModalToggle = () => {
+    setShowEditModal((prev) => !prev);
+  };
+
+  const handleEditBook = (book: Book) => {
+    setBookToEdit(book); // 수정할 책 정보를 설정
+    handleEditModalToggle(); // 수정 모달 열기
   };
 
   const booksPerPage = 10;
@@ -59,12 +70,14 @@ export default function BookList() {
       .catch((err) => console.log(err));
   };
 
-  const handleEditBook = (id: number) => {
-    router.push(`/books/edit/${id}`);
+  // 책 수정 후 목록 갱신
+  const updateBookInList = (updatedBook: Book) => {
+    setBooks((prevBooks) =>
+      prevBooks.map((book) => (book.id === updatedBook.id ? updatedBook : book)),
+    );
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const addBookToList = (newBook: any) => {
+  const addBookToList = (newBook: Book) => {
     setBooks((prevList) => [...prevList, newBook]);
   };
 
@@ -72,7 +85,6 @@ export default function BookList() {
     axios
       .get('/api/books')
       .then((res) => {
-        console.log(res);
         setBooks(res.data);
       })
       .catch((err) => console.log(err));
@@ -86,7 +98,7 @@ export default function BookList() {
       </div>
       <button
         className="mx-1 px-4 py-2 mb-2 border rounded-lg bg-blue-500 text-white"
-        onClick={handleModalToggle}>
+        onClick={handlePostModalToggle}>
         책 추가하기
       </button>
 
@@ -103,15 +115,15 @@ export default function BookList() {
               <button
                 className="border px-4 py-2 rounded-lg hover:bg-slate-300 transition"
                 onClick={(e) => {
-                  e.stopPropagation(); // 리스트 항목 클릭 시 페이지 이동 방지
-                  handleEditBook(book.id);
+                  e.stopPropagation();
+                  handleEditBook(book); // 수정할 책 정보 전달
                 }}>
                 수정
               </button>
               <button
                 className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition"
                 onClick={(e) => {
-                  e.stopPropagation(); // 리스트 항목 클릭 시 페이지 이동 방지
+                  e.stopPropagation();
                   handleDeleteBook(book.id);
                 }}>
                 삭제
@@ -134,11 +146,19 @@ export default function BookList() {
         ))}
       </div>
 
-      {showModal && (
+      {showPostModal && (
         <BookPostModal
-          addBook={showModal}
-          clickModal={handleModalToggle}
+          addBook={showPostModal}
+          clickModal={handlePostModalToggle}
           addBookToList={addBookToList}
+        />
+      )}
+
+      {showEditModal && bookToEdit && (
+        <BookEditModal
+          book={bookToEdit}
+          clickModal={handleEditModalToggle}
+          updateBookInList={updateBookInList}
         />
       )}
     </div>
