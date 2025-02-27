@@ -2,16 +2,15 @@ import { bookList } from '@/lib/bookList';
 import { NextRequest, NextResponse } from 'next/server';
 
 // 책 상세정보 조회
+export async function GET(req: NextRequest, context: { params: { id: string } }) {
+  const { id } = await context.params; // 비동기적으로 params를 받아옴
+  const parsedId = Number(id);
 
-export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url); // URL에서 쿼리 파라미터 추출
-  const id = searchParams.get('id'); // 'id' 파라미터 추출
-
-  if (!id) {
-    return NextResponse.json({ error: 'ID is required' }, { status: 400 });
+  if (!parsedId) {
+    return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
   }
 
-  const book = bookList.find((book) => book.id === Number(id));
+  const book = bookList.find((book) => book.id === parsedId);
 
   if (!book) {
     return NextResponse.json({ error: 'Book not found' }, { status: 404 });
