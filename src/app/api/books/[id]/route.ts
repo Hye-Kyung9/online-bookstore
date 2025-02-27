@@ -2,8 +2,10 @@ import { bookList } from '@/lib/bookList';
 import { NextResponse } from 'next/server';
 
 //책 상세정보 조회
-export async function GET(req: Request, { params }: { params: { id: number } }) {
-  const book = bookList.find((book) => book.id === params.id);
+export async function GET(req: Request, context: { params: { id: string } }) {
+  const { id } = context.params;
+
+  const book = bookList.find((book) => book.id === Number(id));
 
   if (!book) {
     return NextResponse.json({ error: 'Book not found' }, { status: 404 });
