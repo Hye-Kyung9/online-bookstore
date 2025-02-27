@@ -15,7 +15,7 @@ export default function BookDetail() {
         setBook(res.data);
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [id]);
 
   return (
     <div className="p-4">

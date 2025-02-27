@@ -1,10 +1,11 @@
 import { bookList } from '@/lib/bookList';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 // 책 상세정보 조회
-export async function GET(req: Request, { params }: { params: { id: string } }) {
-  // id는 문자열로 받기 때문에, 숫자로 변환하여 비교
-  const book = bookList.find((book) => book.id === Number(params.id));
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+  const id = params.id;
+
+  const book = bookList.find((book) => book.id === Number(id));
 
   if (!book) {
     return NextResponse.json({ error: 'Book not found' }, { status: 404 });
@@ -12,6 +13,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 
   return NextResponse.json(book);
 }
+
 //책 내용 수정
 export async function PUT(req: Request, { params }: { params: { id: string } }) {
   try {
