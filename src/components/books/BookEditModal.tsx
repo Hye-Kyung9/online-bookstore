@@ -28,7 +28,7 @@ export default function BookEditModal({ book, clickModal, updateBookInList }: Bo
       .put(`/api/books/${book.id}`, updatedBook)
       .then((res) => {
         console.log(res);
-        updateBookInList(res.data); // 수정된 책 목록 갱신
+        updateBookInList(updatedBook); // 수정된 책 목록 갱신
         alert('책이 수정되었습니다!');
         clickModal(); // 모달 닫기
       })
